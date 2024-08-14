@@ -9,14 +9,13 @@ This PORFOLIO will provide an overview ofkey SQL queries and their practical app
 They form the core of database interactions, allowing for precise control over data operations and analytics.
 
 **Basic SQL Query Types:**
-
-1. SELECT Queries
-     
-5. **JOIN Queries:**
-  
- **AGGREGATE Functions:**
-  
-**Advanced SQL Features:**
+SELECT Queries    
+JOIN Queries
+   Where
+   group by
+   having clause
+AGGREGATE Functions
+  Advanced SQL Features
 
 - **Subqueries:** Queries within queries for complex data retrieval.
 - **Indexes:** Improve query performance by speeding up data retrieval.
