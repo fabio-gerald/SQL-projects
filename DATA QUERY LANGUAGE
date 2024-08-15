@@ -1,0 +1,168 @@
+--DQL
+
+
+--Implement the provided relation model using SQL ( DDL part ) & Insert data into your tables ( DML part )
+
+
+
+
+CREATE DATABASE DQL;
+USE DQL;
+
+
+--PRODUCT TABLE
+ CREATE TABLE PRODUCT(
+    PRODUCT_NAME VARCHAR(20) PRIMARY KEY,
+    PRODUCT_PRICE FLOAT
+ );
+
+
+ --INSERTING DATA INTO PRODUCT TABLE
+ INSERT INTO PRODUCT
+ VALUES('DOOHICKEY', 100),
+       ( 'WIDGET',  100),
+         ( 'GADGET', 2000),
+         ('MACHINE', 400),
+         ( 'ROBOTS', 40000);
+
+
+SELECT*FROM PRODUCT;
+
+
+--CUSTOMERS TABLE
+CREATE TABLE CUSTOMERS(
+   CUSTOMER_ID INT PRIMARY KEY ,
+    CUSTOMER_NAME VARCHAR( 50),
+    CUSTOMER_ADDRESS VARCHAR(100)
+
+
+);
+--INSERTING DATA INTO CUSTOMERS TABLE
+INSERT INTO CUSTOMERS
+VALUES(1,'Ahmed','TUNISIA'),
+ (2, 'Coulibaly','SENEGAL'),
+ (3, 'Hasan', 'EGYPT'),
+ (4,'Ahmed','JAPAN'),
+ (5, 'Coulibaly','CONGO'),
+ (6, 'ECHEZONA', 'NIGERIA'),
+  (7, 'KEMP','USA'),
+ (8, 'BILLY', 'BRITAIN');
+ SELECT*FROM CUSTOMERS;
+
+
+ --CREATE ORDER TABLE
+ CREATE TABLE ORDERS(
+    ORDER_ID INT PRIMARY KEY,
+     CUSTOMER_ID INT,
+       PRODUCT_NAME VARCHAR(20),
+       QUANTITY INT,
+       ORDER_DATE DATE,
+       TOTAL_COST FLOAT,
+       FOREIGN KEY(CUSTOMER_ID)REFERENCES CUSTOMERS(CUSTOMER_ID),
+       FOREIGN KEY(PRODUCT_NAME)REFERENCES PRODUCT(PRODUCT_NAME)
+ );
+ SELECT*FROM ORDERS;
+ SELECT*FROM PRODUCT;
+ --INSERTING DATA INTO ORDERS TABLE
+ INSERT INTO ORDERS
+ VALUES(1201,1,'WIDGET',30,'2023-04-03',3000),
+(1202,2,'GADGET',1200,'2023-12-11',2400000),
+(1203,3,'WIDGET',200,'2024-05-30',20000),
+(1204,6,'ROBOTS',10,'2024-08-15',400000),
+(1205,1,'WIDGET',50,'2022-11-03',5000),
+(1206,4,'ROBOTS',12,'2024-02-11',480000),
+(1207,4,'WIDGET',300,'2021-05-15',30000),
+(1208,6,'MACHINE',50,'2024-09-25',20000),
+(1209,7,'ROBOTS',100,'2024-02-11',4000000),
+(1210,5,'DOOHICKEY',100,'2021-05-15',10000),
+(1211,8,'MACHINE',300,'2024-09-25',120000);
+
+
+SELECT*FROM ORDERS
+JOIN CUSTOMERS
+ON CUSTOMERS.CUSTOMER_ID=ORDERS.CUSTOMER_ID;
+
+
+/*Write a SQL query to retrieve the names of the customers who have placed an order for at least one widget and at least one gadget,
+along with the total cost of the widgets and gadgets ordered by each customer.
+The cost of each item should be calculated by multiplying the quantity by the price of the product.*/
+
+
+SELECT CUSTOMERS.CUSTOMER_NAME,SUM(ORDERS.TOTAL_COST)AS 'TOTAL COST'FROM ORDERS JOIN CUSTOMERS
+ON CUSTOMERS.CUSTOMER_ID=ORDERS.CUSTOMER_ID
+WHERE ORDERS.PRODUCT_NAME LIKE 'GADGET' OR ORDERS.PRODUCT_NAME LIKE 'WIDGET'
+GROUP BY CUSTOMERS.CUSTOMER_NAME;
+
+
+--Write a query to retrieve the names of the customers who have placed an order for at least one widget, along with the total cost of the widgets ordered by each customer.
+
+
+SELECT CUSTOMERS.CUSTOMER_NAME,SUM(ORDERS.TOTAL_COST)AS 'TOTAL COST'FROM ORDERS JOIN CUSTOMERS
+ON CUSTOMERS.CUSTOMER_ID=ORDERS.CUSTOMER_ID
+WHERE ORDERS.PRODUCT_NAME LIKE 'W_____%'
+GROUP BY CUSTOMERS.CUSTOMER_NAME;
+
+
+--Write a query to retrieve the names of the customers who have placed an order for at least one gadget, along with the total cost of the gadgets ordered by each customer.
+
+
+ SELECT CUSTOMERS.CUSTOMER_NAME,SUM(ORDERS.TOTAL_COST)AS 'TOTAL COST'FROM ORDERS JOIN CUSTOMERS
+ON CUSTOMERS.CUSTOMER_ID=ORDERS.CUSTOMER_ID
+WHERE ORDERS.PRODUCT_NAME LIKE 'GA____%'
+GROUP BY CUSTOMERS.CUSTOMER_NAME;
+
+
+--Write a query to retrieve the names of the customers who have placed an order for at least one doohickey, along with the total cost of the doohickeys ordered by each customer.
+
+
+
+
+ SELECT CUSTOMERS.CUSTOMER_NAME,SUM(ORDERS.TOTAL_COST)AS 'TOTAL COST'FROM ORDERS JOIN CUSTOMERS
+ON CUSTOMERS.CUSTOMER_ID=ORDERS.CUSTOMER_ID
+WHERE ORDERS.PRODUCT_NAME LIKE 'DOOHICKEY'
+GROUP BY CUSTOMERS.CUSTOMER_NAME;
+
+
+--Write a query to retrieve the total number of widgets and gadgets ordered by each customer, along with the total cost of the orders.
+
+
+ SELECT CUSTOMERS.CUSTOMER_NAME,SUM(ORDERS.TOTAL_COST)AS 'TOTAL COST',SUM(ORDERS.QUANTITY) 'QUANTITY OF PRODUCT'FROM ORDERS JOIN CUSTOMERS
+ON CUSTOMERS.CUSTOMER_ID=ORDERS.CUSTOMER_ID
+WHERE ORDERS.PRODUCT_NAME LIKE '[WG]%'
+GROUP BY CUSTOMERS.CUSTOMER_NAME
+ORDER BY CUSTOMERS.CUSTOMER_NAME DESC;
+
+
+--Write a query to retrieve the names of the products that have been ordered by at least one customer, along with the total quantity of each product ordered.
+
+
+ SELECT ORDERS.PRODUCT_NAME,SUM(ORDERS.QUANTITY) 'QUANTITY OF PRODUCT'FROM ORDERS JOIN CUSTOMERS
+ON CUSTOMERS.CUSTOMER_ID=ORDERS.CUSTOMER_ID
+GROUP BY ORDERS.PRODUCT_NAME
+ORDER BY ORDERS.PRODUCT_NAME DESC;
+ 
+ --Write a query to retrieve the names of the customers who have placed the most orders, along with the total number of orders placed by each customer.
+ SELECT TOP 3 CUSTOMERS.CUSTOMER_NAME,COUNT(ORDERS.CUSTOMER_ID)'TOTAL NUM OF ORDERS'FROM ORDERS JOIN CUSTOMERS
+ON CUSTOMERS.CUSTOMER_ID=ORDERS.CUSTOMER_ID
+GROUP BY CUSTOMER_NAME
+ORDER BY 'TOTAL NUM OF ORDERS' DESC;
+
+
+--Write a query to retrieve the names of the products that have been ordered the most, along with the total quantity of each product ordered.
+ SELECT TOP 3 ORDERS.PRODUCT_NAME,COUNT(ORDERS.PRODUCT_NAME)'TOTAL NUM OF ORDERS', SUM(QUANTITY)AS'TOTAL QUANTITY ORDERD'FROM ORDERS JOIN CUSTOMERS
+ON CUSTOMERS.CUSTOMER_ID=ORDERS.CUSTOMER_ID
+GROUP BY ORDERS.PRODUCT_NAME
+ORDER BY 'TOTAL NUM OF ORDERS' DESC;
+
+
+--Write a query to retrieve the names of the customers who have placed an order on every day of the week, along with the total number of orders placed by each customer.
+
+
+ SELECT TOP 3 CUSTOMERS.CUSTOMER_NAME,COUNT(ORDERS.CUSTOMER_ID)'TOTAL NUM OF ORDERS'FROM ORDERS JOIN CUSTOMERS
+ON CUSTOMERS.CUSTOMER_ID=ORDERS.CUSTOMER_ID
+WHERE ORDER_DATE LIKE '2024'
+GROUP BY CUSTOMER_NAME
+ORDER BY 'TOTAL NUM OF ORDERS' DESC;
+
+
+
